@@ -1,9 +1,7 @@
 import logging
-from six import with_metaclass
 
 from kalliope.core.Cortex import Cortex
 from kalliope.core.NeuronLauncher import NeuronLauncher
-from kalliope.core.Models import Singleton
 from kalliope.core.Models.APIResponse import APIResponse
 
 logging.basicConfig()
@@ -60,8 +58,7 @@ class LIFOBuffer(object):
         """
         logger.debug("[LIFOBuffer] Add a new synapse list to process to the LIFO")
         self.lifo_list.append(matched_synapse_list)
-        if high_priority:
-            self.reset_lifo = True
+        self.reset_lifo = high_priority
 
     def clean(self):
         """
@@ -104,7 +101,6 @@ class LIFOBuffer(object):
 
         if not self.is_running:
             self.is_running = True
-
             try:
                 # we keep looping over the LIFO til we have synapse list to process in it
                 while self.lifo_list:
@@ -124,6 +120,7 @@ class LIFOBuffer(object):
 
             except Serialize:
                 return self._return_serialized_api_response()
+        return "Kalliope Runing... request added to the queue"
 
     def _process_synapse_list(self, synapse_list):
         """
